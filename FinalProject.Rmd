@@ -1,0 +1,78 @@
+---
+title: "French names"
+author: "BASON Camille and BROUCKE Hugo"
+date: "17/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(readr)
+library(tidyverse)
+library(stats)
+```
+
+## Presentation of the data
+
+This project focuses on an analysis of French first names and in particular what it could explain their importance or decline. For this we used data from INSEE (National Institute of Statistics and Economic Studies). You can find this dataset by clicking on the following link. <https://www.insee.fr/fr/statistiques/2540004?fbclid=IwAR0OeemTz-VmcGNh_OZugax24ZtjhBImiq2tXoYdrS0IEAh3G8zUSo_BTl8#consulter>.
+
+
+```{r cars}
+data <- read.csv("nat2018.csv",sep = ";", encoding = "UTF-8")
+data$annais <- str_replace(data$annais,"XXXX","2019-15-07")
+data$annais <- str_pad(data$annais,5,"right")
+data$annais <- str_replace(data$annais," ","-31-12")
+data$annais <- as.Date(data$annais, format="%Y-%d-%m")
+data <- data %>% filter(!is.na(preusuel)) %>% #Remove empty firstname
+  filter(preusuel != "_PRENOMS_RARES") %>% #Remove rare firstnames
+  #○filter(annais != "XXXX") %>% #Remove year 2019
+  rename(sex = X.U.FEFF.sexe, year = annais, firstname = preusuel, number = nombre) #Rename variables to english
+n <- data %>% select(firstname) %>% distinct() %>% nrow() 
+ngirls <- data %>% filter(sex==2) %>% select(firstname) %>% distinct() %>% nrow() 
+nboys <- data %>% filter(sex==1) %>% select(firstname) %>% distinct() %>% nrow() 
+
+```
+
+This dataset contains `r n` first names of which are `r nboys` boy's names and `r ngirls` girl's names from the year 1900 to 2018. We also have the number of parent's declaration giving this first name by year, as well as the sex of the first name.
+
+## First names and sport
+
+One of the best-known sports events in France is the 1998 Football World Cup, and the most successful World Cup in 2018. We will now observe whether these two events have had an impact on the names of the French.
+
+### 1998 Football World Cup
+
+```{r pressure, echo=FALSE}
+#class(year)
+#year <- type.convert(year, dec=".")
+zinedine <- data %>% filter(year >1990 | year<2006)
+
+zinedine <- zinedine %>% filter(firstname == "ZINEDINE"|firstname == "LILIAN" | firstname == "BIXENTE" )
+graph <- ggplot(zinedine, aes(x = year, y = number, colour = firstname))+ 
+  geom_line(size=1.5)
+graph
+
+```
+
+## First names and cinema
+
+
+```{r pressure, echo=FALSE}
+```
+
+## First names and music
+
+
+```{r pressure, echo=FALSE}
+```
+
+## First names and politic
+
+
+```{r pressure, echo=FALSE}
+```
+
+## First names and economic
+
+
+```{r pressure, echo=FALSE}
+```
