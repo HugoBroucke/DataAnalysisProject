@@ -31,4 +31,4 @@ dep <-dep %>% mutate(department=case_when(
     department %in% c("02") ~ "Corse",
   ))
 
-eco2000 <- dep %>% filter(year(year)==2000) %>% group_by(department, firstname) %>% summarize(sum(number))
+eco2000 <- dep %>% group_by(year, department, firstname) %>% sort( summarize("number"=sum(number))) #%>%sort(number)

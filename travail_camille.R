@@ -31,8 +31,9 @@ graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
   geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE)
 graph
 
-
+arwen <- data_nat_clean %>% filter(firstname == "ARWEN" & sex=="2")
 cinema <- data_nat_clean %>% filter(firstname=="NEO" |firstname == "BELLA" |firstname == "ANAKIN")
+cinema <- bind_rows(arwen, cinema)
 cinema <- cinema%>% filter(year(year) > 1990 )
 graph <- ggplot(cinema, aes(x = year, y = number, colour = firstname))+ 
   geom_line(size=1.5) + ggtitle("Plot of number of name by years in link with the cinema") +
@@ -41,7 +42,9 @@ graph <- ggplot(cinema, aes(x = year, y = number, colour = firstname))+
   geom_label(x=as.numeric(as.Date("1999-01-01")), y=25, label="Matrix",colour = "black", size = 3, show.legend=FALSE)+
   geom_vline(aes (xintercept =as.numeric(as.Date("2009-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("2009-01-01")),y=105, label="Twilight",colour = "black", size = 3, show.legend=FALSE)+
-  geom_label(x=as.numeric(as.Date("1999-01-01")), y=100, label="Star Wars: Episode I ",colour = "black", size = 3, show.legend=FALSE)
+  geom_label(x=as.numeric(as.Date("1999-01-01")), y=100, label="Star Wars: Episode I ",colour = "black", size = 3, show.legend=FALSE)+
+  geom_vline(aes (xintercept =as.numeric(as.Date("2001-01-01"))), linetype = "longdash")+
+  geom_label(x=as.numeric(as.Date("2001-01-01")), y=175, label="The Lord of the rings ",colour = "black", size = 3, show.legend=FALSE)
 graph
 
 adolphe <- data_nat_clean %>% filter(firstname == "ADOLPHE" & sex=="1")
