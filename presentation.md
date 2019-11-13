@@ -45,7 +45,7 @@ Data
   - region (only for the second dataset)
   
 
-- 1 dataset from ...
+- 1 dataset from Eco-Sante (http://www.ecosante.fr/index2.php?base=DEPA&langs=FRA&langh=FRA&valeur=RICHPIBDFRAHAB&source=1%20)
 
 
 
@@ -82,7 +82,13 @@ distinct_names$ratio <- ((distinct_names$n_names-lag(distinct_names$n_names))/
 Preliminary Findings - Correlations between firstnames and the society
 ========================================================
 
-ajouter travail camille
+![plot of chunk unnamed-chunk-6](presentation-figure/unnamed-chunk-6-1.png)
+
+![plot of chunk unnamed-chunk-7](presentation-figure/unnamed-chunk-7-1.png)
+
+![plot of chunk unnamed-chunk-8](presentation-figure/unnamed-chunk-8-1.png)
+
+![plot of chunk unnamed-chunk-9](presentation-figure/unnamed-chunk-9-1.png)
 
 Plans for process ahead
 ========================================================

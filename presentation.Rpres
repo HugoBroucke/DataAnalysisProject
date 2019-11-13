@@ -45,7 +45,7 @@ Data
   - region (only for the second dataset)
   
 
-- 1 dataset from ...
+- 1 dataset from Eco-Sante (http://www.ecosante.fr/index2.php?base=DEPA&langs=FRA&langh=FRA&valeur=RICHPIBDFRAHAB&source=1%20)
 
 ```{r, echo=FALSE}
 library(readr)
@@ -120,7 +120,7 @@ plot_ratio
 Preliminary Findings - Correlations between firstnames and the society
 ========================================================
 
-```{r}
+```{r, echo=FALSE}
 zinedine <- data_nat_clean # %>% filter(year(year) > 1993 & year(year)<2003)
 #zinedine$year <- as.factor(zinedine$year)
 zinedine1 <- zinedine %>% filter(firstname == "ZINEDINE"  | firstname=="BIXENTE" | firstname=="YOURI")
@@ -131,14 +131,9 @@ graph <- ggplot(zinedine1, aes(x = year, y = number, colour = firstname))+
   geom_vline(aes (xintercept =as.numeric(as.Date("1998-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("1998-01-01")), y=180, label="1998 Football world cup",colour = "black", show.legend=FALSE)
 graph
+```
 
-#CM18 <- data_nat_clean %>% filter(year(year) > 2010 )
-#CM18 <- CM18  %>% filter(firstname == "ANTOINE"  | firstname=="KYLIAN" | firstname=="BLAISE" | firstname=="BENJAMIN" | firstname=="SAMUEL" | firstname=="HUGO")
-#graph <- ggplot(CM18, aes(x = year, y = number, colour = firstname))+ 
- # geom_line(size=1.5) + ggtitle("Plot of number of name by years for football player IN 2018") +
-  #xlab("Year") + ylab("Number of name")
-#graph
-
+```{r, echo=FALSE}
 got <- data_nat_clean %>% filter(firstname=="BRAN" |firstname == "SANSA" |firstname == "DAENERYS")
 got <- got %>% filter(year(year) > 2004 )
 graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+ 
@@ -148,7 +143,9 @@ graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
   geom_vline(aes (xintercept =as.numeric(as.Date("2011-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE)
 graph
+```
 
+```{r, echo=FALSE}
 arwen <- data_nat_clean %>% filter(firstname == "ARWEN" & sex=="2")
 cinema <- data_nat_clean %>% filter(firstname=="NEO" |firstname == "BELLA" |firstname == "ANAKIN")
 cinema <- bind_rows(arwen, cinema)
@@ -164,7 +161,9 @@ graph <- ggplot(cinema, aes(x = year, y = number, colour = firstname))+
   geom_vline(aes (xintercept =as.numeric(as.Date("2001-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("2001-01-01")), y=175, label="The Lord of the rings ",colour = "black", size = 3, show.legend=FALSE)
 graph
+```
 
+```{r, echo=FALSE}
 adolphe <- data_nat_clean %>% filter(firstname == "ADOLPHE" & sex=="1")
 adolphe <- adolphe %>% filter(year(year) > 1909 & year(year) < 1951 )
 victoire <- data_nat_clean %>% filter(firstname == "VICTOIRE" & sex=="2")
@@ -186,7 +185,6 @@ graph <- ggplot(ww, aes(x = year, y = number, colour = firstname))+
   geom_label(x=as.numeric(as.Date("1945-01-01")), y=200, label="End of the World II",colour = "black", size = 2.5, show.legend=FALSE)
 graph
 ```
-
 
 Plans for process ahead
 ========================================================
