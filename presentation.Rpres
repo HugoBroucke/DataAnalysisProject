@@ -1,0 +1,128 @@
+The evolution of french firsname from the twentieth century to our days
+========================================================
+author: Camille Bason - Hugo Broucke
+date: November 14th, 2019
+autosize: true
+
+Summary
+========================================================
+
+- Idea
+
+- Data
+
+- Preliminary Findings - Descriptive statistics
+
+- Preliminary Findings - Correlations between firstnames and the society
+
+- Plans for process ahead
+
+Idea
+========================================================
+
+- Use the data from INSEE (French National Institute of Statistics and Economic Studies) about french firsnames to talk about the evolution of it over time
+
+- Inspiration:
+  - Website article of Slate that explains why some firsnames gained or loss in popularity over time (http://www.slate.fr/life/74937/donnees-prenom-france-evolution)
+  - Website article from Topito that gives 10 weird firstnames (such as "Burger") that are allowed by civil status (http://www.topito.com/top-prenoms-autorises-etat-civil)
+
+- Do a project in two parts:
+  - Give some general stats about french names : 
+    ~ Evolution of the number of distinct names over time
+    ~ Most popular names according to french regions over time
+  - Try to see why are some names popular :
+    ~ Focus on some names that suddenly became popular
+    ~ Check correlation between firstname's popularity and gross domestic product of french regions
+    
+Data
+========================================================
+
+- 2 datasets from INSEE (5https://www.insee.fr/fr/statistiques/2540004#consulter) : one about data for whole country (4 features), one about data for regions (5 features):
+  - gender of the firstname
+  - firstname
+  - year
+  - occurence's number of the name for the given year
+  - region (only for the second dataset)
+  
+
+- 1 dataset from ...
+
+```{r, echo=FALSE}
+library(readr)
+library(tidyverse)
+
+data_nat <- read.csv("nat2018.csv",sep = ";", encoding = "UTF-8")
+data_dpt <- read.csv("dpt2018.csv",sep = ";", encoding = "UTF-8")
+
+data_nat_clean <- data_nat %>% filter(!is.na(preusuel)) %>% #Remove empty firstname
+  filter(preusuel != "_PRENOMS_RARES") %>% #Remove rare firstnames
+  filter(annais != "XXXX") %>% #Remove year 2019
+  rename(sex = X.U.FEFF.sexe, year = annais, firstname = preusuel, number = nombre) #Rename variables to english
+
+data_dpt_clean <- data_dpt %>% filter(!is.na(preusuel)) %>% #Remove empty firstname
+  filter(preusuel != "_PRENOMS_RARES") %>% #Remove rare firstnames
+  filter(annais != "XXXX") %>% #Remove year 2019
+  rename(sex = X.U.FEFF.sexe, year = annais, firstname = preusuel, department = dpt, number = nombre)
+```
+
+```{r}
+summary(data_nat_clean)
+```
+
+Preliminary findings - Descriptive statistics
+========================================================
+
+```{r, echo=FALSE}
+#Mettre le year format date
+data_nat_clean$year <- str_pad(data_nat_clean$year,5,"right")
+data_nat_clean$year <- str_replace(data_nat_clean$year," ","-31-12")
+data_nat_clean$year <- as.Date(data_nat_clean$year, format="%Y-%d-%m")
+
+#Calculer le nombre de prénom unique
+distinct_names <- data_nat_clean %>% 
+                  group_by(year) %>% 
+                  distinct(firstname) %>%
+                  summarise(n_names = n())
+
+#Plot le résultat                  
+plot_distinct_names <- 
+  distinct_names %>% 
+  ggplot(aes(x=year, y=n_names)) + 
+  geom_line(size=1.2, color="blue") +         
+  ggtitle("Number of French unique names from 1900 to 2018") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Year") + ylab("Number of unique names")
+
+plot_distinct_names
+```
+
+```{r}
+#Adding difference for each year
+distinct_names$ratio <- ((distinct_names$n_names-lag(distinct_names$n_names))/
+                           (distinct_names$n_names+lag(distinct_names$n_names))*100)
+```
+
+```{r, echo=FALSE}
+#Plot la différence d'augmentation
+plot_ratio <- distinct_names %>% 
+  ggplot(aes(x=year, y=ratio)) + 
+  geom_hline(yintercept=0, size = 1) +
+  geom_line(size = 1.2, color = "red") +
+  ggtitle("Evolution of names from 1900 to 2018") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Year") + ylab("Percentage of difference")
+
+plot_ratio
+```
+
+Preliminary Findings - Correlations between firstnames and the society
+========================================================
+
+ajouter travail camille
+
+Plans for process ahead
+========================================================
+
+- Try to implement an interactive map of France with its regions that will show the most popular name for each region for each gender (the user should be able to select the year in order for him to see the map of France with the most popular firstnames for this year)
+
+- Link the data to an economic variable (GDP...) to see if there is a correlation between some firstnames patterns and region economy
