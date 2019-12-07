@@ -40,6 +40,7 @@ girls <- table %>% filter(sex==2)
 
 library(plotly)
 
+
 girls %>% plot_ly(
   x = ~region, 
   y = ~number,
@@ -52,8 +53,13 @@ girls %>% plot_ly(
   layout (
     xaxis = list( title = "French regions"),
     yaxis=list(title="Number of births"),
-    title = "Evolution of the most popular girl French firstname according to the region from 1900 to 2018",
-    showlegend = FALSE)
+    title = list(text = "Evolution of the most popular girl French firstname according to the region from 1900 to 2018",
+                 font=list(size=20)),
+    showlegend = FALSE) %>% 
+  animation_slider(
+      currentvalue = list(font = list(color="black")),
+      pad = list(t=80))
+
 
 boys %>% plot_ly(
   x = ~region, 

@@ -32,9 +32,11 @@ data_dpt_clean <- data_dpt %>% filter(!is.na(preusuel)) %>%
 
 ```
 
-# Partie 1 : Analyse descriptive
+# Part 1 : Descriptive analysis
 
 ## Unique French names
+
+### Evolution over time
 
 ```{r}
 #Changing the format of year in national data
@@ -60,12 +62,14 @@ plot_distinct_names <-
 plot_distinct_names
 ```
 
-```{r message=FALSE}
-#Ajoute la différence selon l'année
+### Difference between one year to another over time
+
+```{r include=FALSE}
+#Adding difference according to year
 distinct_names$ratio <- ((distinct_names$n_names-lag(distinct_names$n_names))/
                            (distinct_names$n_names+lag(distinct_names$n_names))*100)
 
-#Plot la différence d'augmentation
+#Plotting difference of distinct names by year
 plot_ratio <- distinct_names %>% 
   ggplot(aes(x=year, y=ratio)) + 
   geom_hline(yintercept=0, size = 1) +
@@ -76,11 +80,10 @@ plot_ratio <- distinct_names %>%
 plot_ratio
 ```
 
-## Working with department data
+## Most popular names for each region
 
 ```{r}
 #Creating region dataset
-
 region <-data_dpt_clean %>% 
   mutate(region=case_when(
   department %in% c("95", "78", "91", "77","94","92","93","75") ~ "Ile-de-France",
@@ -103,13 +106,14 @@ region <-data_dpt_clean %>%
   department %in% c("01","07","26","38","42","69","73","74") ~ "Rhone-Alpes",
   department %in% c("03", "15", "43", "63") ~ "Auvergne",
   department %in% c("11","30","34","48", "66") ~ "Languedoc-Roussillon",
-  department %in% c("04","05","06","13", "83","84") ~ "Provence-Alpes-Cote d'Azur ",
+  department %in% c("04","05","06","13", "83","84") ~ "PACA",
   department %in% c("20") ~ "Corse",
   department %in% c("971","972","973","974") ~ "Overseas territories",
 ))
 ```
 
 ```{r}
+#Creating df for best name in each region every year
 table <- region %>% 
   group_by(year, sex, region, firstname) %>% 
   mutate(number = sum(number)) %>% 
@@ -119,9 +123,15 @@ table <- region %>%
   unique() %>% 
   filter(number == max(number))
 
+#Filtering by sex
 boys <- table %>% filter(sex==1)
 girls <- table %>% filter(sex==2)
+```
 
+### Girls names
+
+```{r}
+#Plotting result for girls
 girls %>% plot_ly(
   x = ~region, 
   y = ~number,
@@ -134,9 +144,18 @@ girls %>% plot_ly(
   layout (
     xaxis = list( title = "French regions"),
     yaxis=list(title="Number of births"),
-    title = "Evolution of the most popular girl French firstname according to the region from 1900 to 2018",
-    showlegend = FALSE)
+    title = list(text = "Evolution of the most popular girl French firstname according to the region from 1900 to 2018",
+                 font=list(size=14)),
+    showlegend = FALSE) %>% 
+  animation_slider(
+      currentvalue = list(font = list(color="black")),
+      pad = list(t=130))
+```
 
+### Boys names
+
+```{r}
+#Plotting result for boys
 boys %>% plot_ly(
   x = ~region, 
   y = ~number,
@@ -149,8 +168,12 @@ boys %>% plot_ly(
   layout (
     xaxis = list( title = "French regions"),
     yaxis=list(title="Number of births"),
-    title = "Evolution of the most popular boy French firstname according to the region from 1900 to 2018",
-    showlegend = FALSE)
+    title = list(text = "Evolution of the most popular boy French firstname according to the region from 1900 to 2018",
+                 font=list(size=14)),
+    showlegend = FALSE) %>% 
+  animation_slider(
+      currentvalue = list(font = list(color="black")),
+      pad = list(t=130))
 ```
 
 # Partie 2
@@ -239,29 +262,29 @@ data_dpt_clean$year <- as.Date(data_dpt_clean$year, format="%Y-%d-%m")
 
 dep <- data_dpt_clean %>% filter(year(year)>1989 & year(year)<2013)
 dep <-dep %>% mutate(department=case_when(
-    department %in% c("95", "78", "91", "77","94","92","93","75") ~ "R11 Ile-de-France",
-    department %in% c("08","51","10","52") ~ "R21 Champagne-Ardenne",
-    department %in% c("02","60","80") ~ "R22 Picardie",
-    department %in% c("76", "27") ~ "R23 Haute-normandie",
-    department %in% c("18","28","36","37", "41", "45") ~ "R24 Centre",
-    department %in% c("14","50","61") ~ "R25 Basse-Normandie",
-    department %in% c("21", "58", "71", "89") ~ "R26 Bourgogne",
-    department %in% c("59","62") ~ "R31 Nord-Pas-de-Calais",
-    department %in% c("54","55","57", "88") ~ "R41 Lorraine",
-    department %in% c("67", "68") ~ "R42 Alsace",
-    department %in% c("25","39","70","90") ~ "R43 Franche-Comté",
-    department %in% c("44","49","53", "72","85") ~ "R52 Pays de la Loire",
-    department %in% c("22", "29", "35", "56") ~ "R53 Bretagne",
-    department %in% c("16","17","79","86") ~ "R54 Poitou-CharenteS",
-    department %in% c("24","33","40","47","64") ~ "R72 Aquitaine",
-    department %in% c("09", "12", "31", "32","46","65","81","82") ~ "R73 Midi-Pyrenées",
-    department %in% c("19","23","87") ~ "R74 Limousin",
-    department %in% c("01","07","26","38","42","69","73","74") ~ "R82 Rhone-Alpes",
-    department %in% c("03", "15", "43", "63") ~ "R83 Auvergne",
-    department %in% c("11","30","34","48", "66") ~ "R91 Languedoc-Roussillon",
-    department %in% c("04","05","06","13", "83","84") ~ "R93 Provence-Alpes-Cote d'Azur ",
-    department %in% c("20") ~ "R94 Corse",
-    department %in% c("971", "972", "973", "974") ~ "ROM Départements d'Outre-Mer",
+  department %in% c("95", "78", "91", "77","94","92","93","75") ~ "Ile-de-France",
+  department %in% c("08","51","10","52") ~ "Champagne-Ardenne",
+  department %in% c("02","60","80") ~ "Picardie",
+  department %in% c("76", "27") ~ "Haute-normandie",
+  department %in% c("18","28","36","37", "41", "45") ~ "Centre",
+  department %in% c("14","50","61") ~ "Basse-Normandie",
+  department %in% c("21", "58", "71", "89") ~ "Bourgogne",
+  department %in% c("59","62") ~ "Nord-Pas-de-Calais",
+  department %in% c("54","55","57", "88") ~ "Lorraine",
+  department %in% c("67", "68") ~ "Alsace",
+  department %in% c("25","39","70","90") ~ "Franche-Comté",
+  department %in% c("44","49","53", "72","85") ~ "Pays de la Loire",
+  department %in% c("22", "29", "35", "56") ~ "Bretagne",
+  department %in% c("16","17","79","86") ~ "Poitou-CharenteS",
+  department %in% c("24","33","40","47","64") ~ "Aquitaine",
+  department %in% c("09", "12", "31", "32","46","65","81","82") ~ "Midi-Pyrenées",
+  department %in% c("19","23","87") ~ "Limousin",
+  department %in% c("01","07","26","38","42","69","73","74") ~ "Rhone-Alpes",
+  department %in% c("03", "15", "43", "63") ~ "Auvergne",
+  department %in% c("11","30","34","48", "66") ~ "Languedoc-Roussillon",
+  department %in% c("04","05","06","13", "83","84") ~ "PACA ",
+  department %in% c("20") ~ "Corse",
+  department %in% c("971","972","973","974") ~ "Overseas territories",
   ))
 dep <- dep %>% rename(Region = department)
 

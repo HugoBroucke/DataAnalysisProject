@@ -15,5 +15,5 @@ data_nat_clean <- data_nat %>% filter(!is.na(preusuel)) %>% #Remove empty firstn
 data_dpt_clean <- data_dpt %>% filter(!is.na(preusuel)) %>% #Remove empty firstname
   filter(preusuel != "_PRENOMS_RARES") %>% #Remove rare firstnames
   filter(annais != "XXXX") %>% #Remove year 2019
-  rename(sex = X.U.FEFF.sexe, year = annais, firstname = preusuel, department = dpt, number = nombre) #Rename variables to 
-
+  rename(sex = X.U.FEFF.sexe, year = annais, firstname = preusuel, department = dpt, number = nombre) #Rename variables to
+ 
