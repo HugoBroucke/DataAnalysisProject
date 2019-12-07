@@ -68,3 +68,13 @@ graph <- ggplot(ww, aes(x = year, y = number, colour = firstname))+
   geom_label(x=as.numeric(as.Date("1945-01-01")), y=200, label="End of the World II",colour = "black", size = 2.5, show.legend=FALSE)
 graph
 
+got <- data_nat_clean %>% filter(firstname=="FELICIE" |firstname == "ROXANNE" |firstname == "OSCAR" |firstname == "LOLITA")
+#got <- got %>% filter(year(year) > 2004 )
+graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+ 
+  geom_line(size=1.5) +
+  ggtitle("Plot of number of name by years in link with Game of throne") +
+  xlab("Year") + ylab("Number of name")
+  #geom_vline(aes (xintercept =as.numeric(as.Date("2011-01-01"))), linetype = "longdash")+
+  #geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE)
+graph
+
