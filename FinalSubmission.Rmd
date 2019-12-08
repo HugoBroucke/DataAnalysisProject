@@ -8,10 +8,20 @@ output:
     highlight: github
     toc: true
     toc_depth: 2
-    #code_folding : "hide"
 ---
 
-```{r setup, include=FALSE}
+
+
+# Overview and motivation
+Voir diapo
+# Related work
+Voir diapo
+# Initial Data
+Voir diapo 
+#  Data
+Mettre les deux premiers chunk de code en visible et les expliquer (+voir diapo)
+
+```{r setup, include=FALSE, echo=TRUE}
 knitr::opts_chunk$set(echo = FALSE)
 library(readr)
 library(tidyverse)
@@ -35,19 +45,26 @@ data_dpt_clean <- data_dpt %>% filter(!is.na(preusuel)) %>%
   filter(annais != "XXXX") %>%
   rename(sex = X.U.FEFF.sexe, year = annais, firstname = preusuel, department = dpt, number = nombre)
 
-```
-
-# Part 1 : Descriptive analysis
-
-## Unique French names
-
-### Evolution over time
-
-```{r}
 #Changing the format of year in national data
 data_nat_clean$year <- str_pad(data_nat_clean$year,5,"right")
 data_nat_clean$year <- str_replace(data_nat_clean$year," ","-31-12")
 data_nat_clean$year <- as.Date(data_nat_clean$year, format="%Y-%d-%m")
+
+```
+# Exploratory Analysis
+
+
+## Part 1 : Descriptive analysis
+
+### Unique French names
+
+#### Evolution over time
+
+The first work done was to see the evolution of the number of French first names existing during the twentieth century. We can observe on this first figure that since 1900, there are more and more different French names. However, in recent years there has been a decrease. This can be interpreted as the fact that in recent years, the number of births has been steadily decreasing in France (758 000 in 2018 against nearly 800 000 in 2010), which means that there is less birth and consequently, fewer given names.
+In order to analyze in more detail the variations in the number of unique first names, we decided to make a figure showing the difference in percentage of the number of different first names from one year to another.
+
+```{r}
+
 
 #Calculate number of unique names
 distinct_names <- data_nat_clean %>% 
@@ -67,7 +84,14 @@ plot_distinct_names <-
 plot_distinct_names
 ```
 
-### Difference between one year to another over time
+
+#### Difference between one year to another
+
+According to this figure, we can observe that the evolution of the number of different French first names from one year to another has remained quite stable in a century (variations between -4% and + 4% from one year to another in general). However, we can observe in this figure 3 distinct peaks.
+•	The first corresponds to a decrease of almost -10% and is in 1915, while the First World War was raging. We can interpret this peak by the fact that the French drastically decreased the birth rate during this period which means that fewer children were born, so fewer names were given.
+•	The other two notable peaks are found in 1919 and 1946 and correspond to increases of almost 10%. This can be explained by the phenomenon of "baby boom" which took place at the end of the two world wars, and because of this, more different names were given since the birth rate was higher.
+We can therefore hypothesize that the growth of the birth rate is positively correlated with the number of unique French names given to babies (which seems logical).
+
 
 ```{r include=FALSE}
 #Adding difference according to year
@@ -85,7 +109,8 @@ plot_ratio <- distinct_names %>%
 plot_ratio
 ```
 
-## Most popular names for each region
+### Most popular names for each region
+
 
 ```{r}
 #Creating region dataset
@@ -133,7 +158,11 @@ boys <- table %>% filter(sex==1)
 girls <- table %>% filter(sex==2)
 ```
 
-### Girls names
+#### Girls names
+
+This graph represents the most popular names among girls from 1900 to 2018. We observe that from 1900 until 1959, the most popular female name ("Marie”) was the same in each region. Note that the region "Ile de France" (region where the French capital Paris is located), the most popular name has fluctuated from year to year (among the most popular names, we find for example "Jacqueline" in 1932 or "Francoise" in 1948).
+ The diversity of feminine names between regions began to appear in 1960 when the name "Marie" began to lose popularity giving way to names such as "Catherine" or "Sylvie". Nowadays, le names “Jade” and “Emma” are the most popular girls’ names in France.
+
 
 ```{r}
 #Plotting result for girls
@@ -157,7 +186,14 @@ girls %>% plot_ly(
       pad = list(t=130))
 ```
 
-### Boys names
+#### Boys names
+
+This graph represents the most popular names among girls from 1900 to 2018. Unlike the previous figure, we can observe a greater diversity in male given names in France since 1900 ("Jean", "André", "Marcel" or "Joseph" were popular names in some regions). However, a few years later, the name "Jean" quickly became the most popular first name in any region. This name was so popular that it was given more than 8000 times in 1946 in the "Ile de France" region.
+It will be necessary to wait until 1949 to see diversify the names of French boys with the appearance of the names "Michel" or "Philippe" in the top of the given names. Nowadays, there is a clear difference between regions in the popularity of boy given names since we observe no less than 9 different names being the most popular names in the different regions.
+To conclude, we have seen in a general way that:
+•	The names of boys were more diverse than those of girls
+•	The region “Ile-de-France” often stands out from the crowd as to the originality of the most popular first name (and also seems to be “avant-garde” because it is often the first region to popularize a given name)
+
 
 ```{r}
 #Plotting result for boys
