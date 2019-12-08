@@ -1,18 +1,23 @@
 ---
-title: "Project"
-author: "Hugo Broucke"
+title: "Evolution for french first names from 1900 to 2018"
+author: "Hugo Broucke and Camille Bason"
 date: "07/12/2019"
 output:
-  html_document:
-    code_folding: "hide"
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    toc: true
+    toc_depth: 2
+    #code_folding : "hide"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(readr)
 library(tidyverse)
 library(plotly)
 library(lubridate)
+library(ggthemes)
 
 #Importing datasets
 data_nat <- read.csv("nat2018_2.csv",sep = ";", encoding = "UTF-8")
@@ -153,9 +158,15 @@ boys %>% plot_ly(
     showlegend = FALSE)
 ```
 
-# Partie 2
+# The popularity of Franch Names
 
-```{r}
+In this part we will study which events have an impact on the popularity of French first names.
+
+## French names and sport
+
+In this part we will study the impact of sport on the popularity of French first names. To illustrate this example, we chose to study the most famous sports event in France: the 1998 World Cup. This World Cup was won by the French for the first time.
+
+```{r fig.align="center"}
 zinedine <- data_nat_clean # %>% filter(year(year) > 1993 & year(year)<2003)
 #zinedine$year <- as.factor(zinedine$year)
 zinedine1 <- zinedine %>% filter(firstname == "ZINEDINE"  | firstname=="BIXENTE" | firstname=="YOURI")
@@ -164,16 +175,17 @@ graph <- ggplot(zinedine1, aes(x = year, y = number, colour = firstname))+
   ggtitle("Plot of number of name by years for football player in 1998") +
   xlab("Year") + ylab("Number of name") +
   geom_vline(aes (xintercept =as.numeric(as.Date("1998-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("1998-01-01")), y=180, label="1998 Football world cup",colour = "black", show.legend=FALSE)
+  geom_label(x=as.numeric(as.Date("1998-01-01")), y=180, label="1998 Football world cup",colour = "black", show.legend=FALSE) +  theme_tufte()
 graph
+```
 
-#CM18 <- data_nat_clean %>% filter(year(year) > 2010 )
-#CM18 <- CM18  %>% filter(firstname == "ANTOINE"  | firstname=="KYLIAN" | firstname=="BLAISE" | firstname=="BENJAMIN" | firstname=="SAMUEL" | firstname=="HUGO")
-#graph <- ggplot(CM18, aes(x = year, y = number, colour = firstname))+ 
- # geom_line(size=1.5) + ggtitle("Plot of number of name by years for football player IN 2018") +
-  #xlab("Year") + ylab("Number of name")
-#graph
+In this graph, we see that the names of three players of the team of France at the 1998 World Cup have a peak of popularity after the victory of France. We can therefore assume that major sports events have an impact on French first names.
 
+## French names and series
+
+The next graph will highlight the impact of TV series on the first name of the French. To illustrate this, we chose one of the best known series in France: *Games of throne*. We can see the names of the famous characters Bran, Daenerys and Sensa.
+
+```{r fig.align="center"}
 got <- data_nat_clean %>% filter(firstname=="BRAN" |firstname == "SANSA" |firstname == "DAENERYS")
 got <- got %>% filter(year(year) > 2004 )
 graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+ 
@@ -181,9 +193,17 @@ graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
   ggtitle("Plot of number of name by years in link with Game of throne") +
   xlab("Year") + ylab("Number of name")+
   geom_vline(aes (xintercept =as.numeric(as.Date("2011-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE)
+  geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE) +  theme_tufte()
 graph
+```
 
+We even observe that the names Daenerys and Sensa appeared just after the diffusion of the series.
+
+## French names and films
+
+In the same spirit as the previous part, we will now observe the impact of films on French first names. For that we selected the films *Matrix* with the character of Neo, the movie *Star Wars: Episode I* with e character of Anakin, the movie *The lord of the rings* with Arwen and finally the movie *Twilight* with the name Bella. Besides, the name Bella, the other names appeared in France just after the diffusion of these films. The cinema therefore has an impact on French first names.
+
+```{r fig.align="center"}
 arwen <- data_nat_clean %>% filter(firstname == "ARWEN" & sex=="2")
 cinema <- data_nat_clean %>% filter(firstname=="NEO" |firstname == "BELLA" |firstname == "ANAKIN")
 cinema <- bind_rows(arwen, cinema)
@@ -197,9 +217,17 @@ graph <- ggplot(cinema, aes(x = year, y = number, colour = firstname))+
   geom_label(x=as.numeric(as.Date("2009-01-01")),y=105, label="Twilight",colour = "black", size = 3, show.legend=FALSE)+
   geom_label(x=as.numeric(as.Date("1999-01-01")), y=100, label="Star Wars: Episode I ",colour = "black", size = 3, show.legend=FALSE)+
   geom_vline(aes (xintercept =as.numeric(as.Date("2001-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("2001-01-01")), y=175, label="The Lord of the rings ",colour = "black", size = 3, show.legend=FALSE)
+  geom_label(x=as.numeric(as.Date("2001-01-01")), y=175, label="The Lord of the rings ",colour = "black", size = 3, show.legend=FALSE) +  theme_tufte()
 graph
+```
 
+## French names and world wars
+
+One of the most tragic recent events in France is the two world wars. So we decided to see the impact of these wars on the first names of the French. One of the heroes of the war is Marchal Joffre, who won the Marne victory. We can see that this victory has an impact on the names of the French since the names Joffre and his feminine Joffrette have a peak of popularity just after this battle.
+When we look at the name Victoire, which means victory in French, there are two peaks in 1918 and 1945 which are the dates of the end of these two wars.
+On the other hand, when we look at the names Adolphes and its feminine derivative Adolphine, we see that their popularity plummets when Adolph Hitler comes to power in Germany.
+
+```{r fig.align="center"}
 adolphe <- data_nat_clean %>% filter(firstname == "ADOLPHE" & sex=="1")
 adolphe <- adolphe %>% filter(year(year) > 1909 & year(year) < 1951 )
 victoire <- data_nat_clean %>% filter(firstname == "VICTOIRE" & sex=="2")
@@ -218,21 +246,35 @@ graph <- ggplot(ww, aes(x = year, y = number, colour = firstname))+
   geom_vline(aes (xintercept =as.numeric(as.Date("1918-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("1918-01-01")), y=500, label="End of the World War I",colour = "black", size = 2.5, show.legend=FALSE)+
   geom_vline(aes (xintercept =as.numeric(as.Date("1945-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("1945-01-01")), y=200, label="End of the World II",colour = "black", size = 2.5, show.legend=FALSE)
-graph
-
-got <- data_nat_clean %>% filter(firstname=="FELICIE" |firstname == "ROXANNE" |firstname == "OSCAR" |firstname == "LOLITA")
-#got <- got %>% filter(year(year) > 2004 )
-graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
-  geom_line(size=1.5) +
-  ggtitle("Plot of number of name by years in link with Game of throne") +
-  xlab("Year") + ylab("Number of name")
-  #geom_vline(aes (xintercept =as.numeric(as.Date("2011-01-01"))), linetype = "longdash")+
-  #geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE)
+  geom_label(x=as.numeric(as.Date("1945-01-01")), y=200, label="End of the World II",colour = "black", size = 2.5, show.legend=FALSE) +  theme_tufte()
 graph
 ```
 
-```{r}
+## French names and music
+
+In this part, we will study the impact of music on french names. We have selected for this three songs. The first is *Roxanne* by The Police, this song released in 1978 will increase the popularity of the name Roxanne in France. Similarly the song *Oscar* by Renaud released in 1981 will explode the popularity of the name Oscar. Finally, the song *Moi ... Lolita* by Alizé will create a new peak of popularity for the name Lolita.
+ 
+```{r fig.align="center"}
+got <- data_nat_clean %>% filter(firstname == "ROXANNE" |firstname == "OSCAR" |firstname == "LOLITA")
+#got <- got %>% filter(year(year) > 2004 )
+graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
+  geom_line(size=1.5) +
+  ggtitle("Plot of number of name by years in link with music") +
+  xlab("Year") + ylab("Number of name")+
+  geom_vline(aes (xintercept =as.numeric(as.Date("1978-01-01"))), linetype = "longdash")+
+  geom_label(x=as.numeric(as.Date("1978-01-01")), y=250, label="Roxanne, The Police",colour = "black", show.legend=FALSE)+
+  geom_vline(aes (xintercept =as.numeric(as.Date("1981-01-01"))), linetype = "longdash")+
+  geom_label(x=as.numeric(as.Date("1981-01-01")), y=550, label="Oscar, Renaud",colour = "black", show.legend=FALSE)+
+  geom_vline(aes (xintercept =as.numeric(as.Date("2000-01-01"))), linetype = "longdash")+
+  geom_label(x=as.numeric(as.Date("2000-01-01")), y=800, label="Lolita, Alizé",colour = "black", show.legend=FALSE) +  theme_tufte()
+graph
+```
+
+## French names and economy
+
+In this part we will observe if there is a correlation between French first names and the economy of the regions. For that we studied the names most given to the little boy and the little girl in 1990, 2000 and 2010 for each French region.
+
+```{r fig.align="center"}
 data_dpt_clean$year <- str_pad(data_dpt_clean$year,5,"right")
 data_dpt_clean$year <- str_replace(data_dpt_clean$year," ","-31-12")
 data_dpt_clean$year <- as.Date(data_dpt_clean$year, format="%Y-%d-%m")
@@ -276,15 +318,18 @@ eco1990girl <- merge(eco1990girl, eco, by = "Region")
 eco1990 <- bind_rows(eco1990boy, eco1990girl)
 
 graph <- ggplot(eco1990boy, aes(x = firstname, y = X1990, color=Region))+ 
-  geom_point(size=1.5) + ggtitle("Plot of more popular boys firstnames in 1990 by Region and GDP") +
-  xlab("GDP") + ylab("Number of name")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  geom_point(size=1.5) + ggtitle("Plot of more popular boy firstnames in 1990 by Region and GDP") +
+  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
 graph
 
 graph <- ggplot(eco1990girl, aes(x = firstname, y = X1990, color=Region))+ 
-  geom_point(size=1.5) + ggtitle("Plot of more popular boys firstnames in 1990 by Region and GDP") +
-  xlab("GDP") + ylab("Number of name")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  geom_point(size=1.5) + ggtitle("Plot of more popular girl firstnames in 1990 by Region and GDP") +
+  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
 graph
+```
+In 1990 we notice that the region Ile de France which is the richest to a popular name differs from other French regions. This is the case for the male and female first names.
 
+```{r fig.align="center"}
 eco2000boy <- dep %>% filter(sex==1, year(year)==2000) %>% 
   group_by(Region) %>%
   filter(number ==max(number))
@@ -296,15 +341,19 @@ eco2000girl <- merge(eco2000girl, eco, by = "Region")
 eco2000 <- bind_rows(eco2000boy, eco2000girl)
 
 graph <- ggplot(eco2000boy, aes(x = firstname, y = X2000, color=Region))+ 
-  geom_point(size=1.5) + ggtitle("Plot of more popular boys firstnames in 2000 by Region and GDP") +
-  xlab("GDP") + ylab("Number of name")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  geom_point(size=1.5) + ggtitle("Plot of more popular boy firstnames in 2000 by Region and GDP") +
+  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
 graph
 
 graph <- ggplot(eco2000girl, aes(x = firstname, y = X2000, color=Region))+ 
-  geom_point(size=1.5) + ggtitle("Plot of more popular boys firstnames in 2000 by Region and GDP") +
-  xlab("GDP") + ylab("Number of name")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  geom_point(size=1.5) + ggtitle("Plot of more popular girlss firstnames in 2000 by Region and GDP") +
+  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
 graph
+```
 
+The same phenomenon is observed in 2000.
+
+```{r fig.align="center"}
 eco2010boy <- dep %>% filter(sex==1, year(year)==2010) %>% 
   group_by(Region) %>%
   filter(number ==max(number))
@@ -316,13 +365,13 @@ eco2010girl <- merge(eco2010girl, eco, by = "Region")
 eco2010 <- bind_rows(eco2010boy, eco2010girl)
 
 graph <- ggplot(eco2010boy, aes(x = firstname, y = X2010, color=Region))+ 
-  geom_point(size=1.5) + ggtitle("Plot of more popular boys firstnames in 2010 by Region and GDP") +
-  xlab("GDP") + ylab("Number of name")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  geom_point(size=1.5) + ggtitle("Plot of more popular boy firstnames in 2010 by Region and GDP") +
+  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
 graph
 
 graph <- ggplot(eco2010girl, aes(x = firstname, y = X2010, color=Region))+ 
-  geom_point(size=1.5) + ggtitle("Plot of more popular boys firstnames in 2010 by Region and GDP") +
-  xlab("GDP") + ylab("Number of name")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  geom_point(size=1.5) + ggtitle("Plot of more popular girl firstnames in 2010 by Region and GDP") +
+  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
 graph
 ```
-
+In 2010, the richest region still has different names from other regions. With these observations, it is difficult to say that the economy has an impact on French first names. If we see a difference of first names in the richest region, we do not observe any difference with the poorest region.
