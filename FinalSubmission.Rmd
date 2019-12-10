@@ -7,21 +7,24 @@ output:
     theme: cayman
     highlight: github
     toc: true
-    toc_depth: 2
+    toc_depth: 4
 ---
 
 
 
 # Overview and motivation
 Voir diapo
+
 # Related work
 Voir diapo
+
 # Initial Data
 Voir diapo 
+
 #  Data
 Mettre les deux premiers chunk de code en visible et les expliquer (+voir diapo)
 
-```{r setup, include=FALSE, echo=TRUE}
+```{r setup, echo=TRUE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(readr)
 library(tidyverse)
@@ -51,68 +54,8 @@ data_nat_clean$year <- str_replace(data_nat_clean$year," ","-31-12")
 data_nat_clean$year <- as.Date(data_nat_clean$year, format="%Y-%d-%m")
 
 ```
-# Exploratory Analysis
 
-
-## Part 1 : Descriptive analysis
-
-### Unique French names
-
-#### Evolution over time
-
-The first work done was to see the evolution of the number of French first names existing during the twentieth century. We can observe on this first figure that since 1900, there are more and more different French names. However, in recent years there has been a decrease. This can be interpreted as the fact that in recent years, the number of births has been steadily decreasing in France (758 000 in 2018 against nearly 800 000 in 2010), which means that there is less birth and consequently, fewer given names.
-In order to analyze in more detail the variations in the number of unique first names, we decided to make a figure showing the difference in percentage of the number of different first names from one year to another.
-
-```{r}
-
-
-#Calculate number of unique names
-distinct_names <- data_nat_clean %>% 
-                  group_by(year) %>% 
-                  distinct(firstname) %>%
-                  summarise(n_names = n())
-
-#Plotting result                 
-plot_distinct_names <- 
-  distinct_names %>% 
-  ggplot(aes(x=year, y=n_names)) + 
-  geom_line(size=1.2, color="blue") +         
-  ggtitle("Number of French unique names from 1900 to 2018") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Year") + ylab("Number of unique names")
-
-plot_distinct_names
-```
-
-
-#### Difference between one year to another
-
-According to this figure, we can observe that the evolution of the number of different French first names from one year to another has remained quite stable in a century (variations between -4% and + 4% from one year to another in general). However, we can observe in this figure 3 distinct peaks.
-•	The first corresponds to a decrease of almost -10% and is in 1915, while the First World War was raging. We can interpret this peak by the fact that the French drastically decreased the birth rate during this period which means that fewer children were born, so fewer names were given.
-•	The other two notable peaks are found in 1919 and 1946 and correspond to increases of almost 10%. This can be explained by the phenomenon of "baby boom" which took place at the end of the two world wars, and because of this, more different names were given since the birth rate was higher.
-We can therefore hypothesize that the growth of the birth rate is positively correlated with the number of unique French names given to babies (which seems logical).
-
-
-```{r include=FALSE}
-#Adding difference according to year
-distinct_names$ratio <- ((distinct_names$n_names-lag(distinct_names$n_names))/
-                           (distinct_names$n_names+lag(distinct_names$n_names))*100)
-
-#Plotting difference of distinct names by year
-plot_ratio <- distinct_names %>% 
-  ggplot(aes(x=year, y=ratio)) + 
-  geom_hline(yintercept=0, size = 1) +
-  geom_line(size = 1.2, color = "red") +
-  ggtitle("Evolution of names from 1900 to 2018") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Year") + ylab("Percentage of difference")
-plot_ratio
-```
-
-### Most popular names for each region
-
-
-```{r}
+```{r, echo=TRUE, warning=FALSE}
 #Creating region dataset
 region <-data_dpt_clean %>% 
   mutate(region=case_when(
@@ -142,7 +85,67 @@ region <-data_dpt_clean %>%
 ))
 ```
 
-```{r}
+# Exploratory Analysis
+
+## Descriptive analysis
+
+### Unique French names
+
+#### Evolution over time
+
+The first work done was to see the evolution of the number of French first names existing during the twentieth century. We can observe on this first figure that since 1900, there are more and more different French names. However, in recent years there has been a decrease. This can be interpreted as the fact that in recent years, the number of births has been steadily decreasing in France (758 000 in 2018 against nearly 800 000 in 2010), which means that there is less birth and consequently, fewer given names.
+
+In order to analyze in more detail the variations in the number of unique first names, we decided to make a figure showing the difference in percentage of the number of different first names from one year to another.
+
+```{r fig.align="center"}
+
+
+#Calculate number of unique names
+distinct_names <- data_nat_clean %>% 
+                  group_by(year) %>% 
+                  distinct(firstname) %>%
+                  summarise(n_names = n())
+
+#Plotting result                 
+plot_distinct_names <- 
+  distinct_names %>% 
+  ggplot(aes(x=year, y=n_names)) + 
+  geom_line(size=1.2, color="blue") +         
+  ggtitle("Number of French unique names from 1900 to 2018") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Year") + ylab("Number of unique names")
+
+plot_distinct_names
+```
+
+#### Difference between one year to another
+
+According to this figure, we can observe that the evolution of the number of different French first names from one year to another has remained quite stable in a century (variations between -4% and + 4% from one year to another in general). However, we can observe in this figure 3 distinct peaks.
+
+•	The first corresponds to a decrease of almost -10% and is in 1915, while the First World War was raging. We can interpret this peak by the fact that the French drastically decreased the birth rate during this period which means that fewer children were born, so fewer names were given.
+•	The other two notable peaks are found in 1919 and 1946 and correspond to increases of almost 10%. This can be explained by the phenomenon of "baby boom" which took place at the end of the two world wars, and because of this, more different names were given since the birth rate was higher.
+
+We can therefore hypothesize that the growth of the birth rate is positively correlated with the number of unique French names given to babies (which seems logical).
+
+```{r warning=FALSE, fig.align="center"}
+#Adding difference according to year
+distinct_names$ratio <- ((distinct_names$n_names-lag(distinct_names$n_names))/
+                           (distinct_names$n_names+lag(distinct_names$n_names))*100)
+
+#Plotting difference of distinct names by year
+plot_ratio <- distinct_names %>% 
+  ggplot(aes(x=year, y=ratio)) + 
+  geom_hline(yintercept=0, size = 1) +
+  geom_line(size = 1.2, color = "red") +
+  ggtitle("Evolution of names from 1900 to 2018") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Year") + ylab("Percentage of difference")
+plot_ratio
+```
+
+### Most popular names for each region
+
+```{r fig.align="center"}
 #Creating df for best name in each region every year
 table <- region %>% 
   group_by(year, sex, region, firstname) %>% 
@@ -161,10 +164,10 @@ girls <- table %>% filter(sex==2)
 #### Girls names
 
 This graph represents the most popular names among girls from 1900 to 2018. We observe that from 1900 until 1959, the most popular female name ("Marie”) was the same in each region. Note that the region "Ile de France" (region where the French capital Paris is located), the most popular name has fluctuated from year to year (among the most popular names, we find for example "Jacqueline" in 1932 or "Francoise" in 1948).
- The diversity of feminine names between regions began to appear in 1960 when the name "Marie" began to lose popularity giving way to names such as "Catherine" or "Sylvie". Nowadays, le names “Jade” and “Emma” are the most popular girls’ names in France.
 
+The diversity of feminine names between regions began to appear in 1960 when the name "Marie" began to lose popularity giving way to names such as "Catherine" or "Sylvie". Nowadays, le names “Jade” and “Emma” are the most popular girls’ names in France.
 
-```{r}
+```{r fig.align="center"}
 #Plotting result for girls
 girls %>% plot_ly(
   x = ~region, 
@@ -189,13 +192,14 @@ girls %>% plot_ly(
 #### Boys names
 
 This graph represents the most popular names among girls from 1900 to 2018. Unlike the previous figure, we can observe a greater diversity in male given names in France since 1900 ("Jean", "André", "Marcel" or "Joseph" were popular names in some regions). However, a few years later, the name "Jean" quickly became the most popular first name in any region. This name was so popular that it was given more than 8000 times in 1946 in the "Ile de France" region.
+
 It will be necessary to wait until 1949 to see diversify the names of French boys with the appearance of the names "Michel" or "Philippe" in the top of the given names. Nowadays, there is a clear difference between regions in the popularity of boy given names since we observe no less than 9 different names being the most popular names in the different regions.
+
 To conclude, we have seen in a general way that:
 •	The names of boys were more diverse than those of girls
 •	The region “Ile-de-France” often stands out from the crowd as to the originality of the most popular first name (and also seems to be “avant-garde” because it is often the first region to popularize a given name)
 
-
-```{r}
+```{r fig.align="center"}
 #Plotting result for boys
 boys %>% plot_ly(
   x = ~region, 
@@ -217,11 +221,11 @@ boys %>% plot_ly(
       pad = list(t=130))
 ```
 
-# The popularity of Franch Names
+## The popularity of Franch Names
 
 In this part we will study which events have an impact on the popularity of French first names.
 
-## French names and sport
+### French names and sport
 
 In this part we will study the impact of sport on the popularity of French first names. To illustrate this example, we chose to study the most famous sports event in France: the 1998 World Cup. This World Cup was won by the French for the first time.
 
@@ -234,13 +238,13 @@ graph <- ggplot(zinedine1, aes(x = year, y = number, colour = firstname))+
   ggtitle("Plot of number of name by years for football player in 1998") +
   xlab("Year") + ylab("Number of name") +
   geom_vline(aes (xintercept =as.numeric(as.Date("1998-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("1998-01-01")), y=180, label="1998 Football world cup",colour = "black", show.legend=FALSE) +  theme_tufte()
+  geom_label(x=as.numeric(as.Date("1998-01-01")), y=180, label="1998 Football world cup",colour = "black", show.legend=FALSE) 
 graph
 ```
 
 In this graph, we see that the names of three players of the team of France at the 1998 World Cup have a peak of popularity after the victory of France. We can therefore assume that major sports events have an impact on French first names.
 
-## French names and series
+### French names and series
 
 The next graph will highlight the impact of TV series on the first name of the French. To illustrate this, we chose one of the best known series in France: *Games of throne*. We can see the names of the famous characters Bran, Daenerys and Sensa.
 
@@ -252,13 +256,13 @@ graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
   ggtitle("Plot of number of name by years in link with Game of throne") +
   xlab("Year") + ylab("Number of name")+
   geom_vline(aes (xintercept =as.numeric(as.Date("2011-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE) +  theme_tufte()
+  geom_label(x=as.numeric(as.Date("2011-01-01")), y=20, label="Game of throne, season 1",colour = "black", show.legend=FALSE) 
 graph
 ```
 
 We even observe that the names Daenerys and Sensa appeared just after the diffusion of the series.
 
-## French names and films
+### French names and films
 
 In the same spirit as the previous part, we will now observe the impact of films on French first names. For that we selected the films *Matrix* with the character of Neo, the movie *Star Wars: Episode I* with e character of Anakin, the movie *The lord of the rings* with Arwen and finally the movie *Twilight* with the name Bella. Besides, the name Bella, the other names appeared in France just after the diffusion of these films. The cinema therefore has an impact on French first names.
 
@@ -276,14 +280,16 @@ graph <- ggplot(cinema, aes(x = year, y = number, colour = firstname))+
   geom_label(x=as.numeric(as.Date("2009-01-01")),y=105, label="Twilight",colour = "black", size = 3, show.legend=FALSE)+
   geom_label(x=as.numeric(as.Date("1999-01-01")), y=100, label="Star Wars: Episode I ",colour = "black", size = 3, show.legend=FALSE)+
   geom_vline(aes (xintercept =as.numeric(as.Date("2001-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("2001-01-01")), y=175, label="The Lord of the rings ",colour = "black", size = 3, show.legend=FALSE) +  theme_tufte()
+  geom_label(x=as.numeric(as.Date("2001-01-01")), y=175, label="The Lord of the rings ",colour = "black", size = 3, show.legend=FALSE) 
 graph
 ```
 
-## French names and world wars
+### French names and world wars
 
 One of the most tragic recent events in France is the two world wars. So we decided to see the impact of these wars on the first names of the French. One of the heroes of the war is Marchal Joffre, who won the Marne victory. We can see that this victory has an impact on the names of the French since the names Joffre and his feminine Joffrette have a peak of popularity just after this battle.
+
 When we look at the name Victoire, which means victory in French, there are two peaks in 1918 and 1945 which are the dates of the end of these two wars.
+
 On the other hand, when we look at the names Adolphes and its feminine derivative Adolphine, we see that their popularity plummets when Adolph Hitler comes to power in Germany.
 
 ```{r fig.align="center"}
@@ -305,11 +311,11 @@ graph <- ggplot(ww, aes(x = year, y = number, colour = firstname))+
   geom_vline(aes (xintercept =as.numeric(as.Date("1918-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("1918-01-01")), y=500, label="End of the World War I",colour = "black", size = 2.5, show.legend=FALSE)+
   geom_vline(aes (xintercept =as.numeric(as.Date("1945-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("1945-01-01")), y=200, label="End of the World II",colour = "black", size = 2.5, show.legend=FALSE) +  theme_tufte()
+  geom_label(x=as.numeric(as.Date("1945-01-01")), y=200, label="End of the World II",colour = "black", size = 2.5, show.legend=FALSE) 
 graph
 ```
 
-## French names and music
+### French names and music
 
 In this part, we will study the impact of music on french names. We have selected for this three songs. The first is *Roxanne* by The Police, this song released in 1978 will increase the popularity of the name Roxanne in France. Similarly the song *Oscar* by Renaud released in 1981 will explode the popularity of the name Oscar. Finally, the song *Moi ... Lolita* by Alizé will create a new peak of popularity for the name Lolita.
  
@@ -325,13 +331,15 @@ graph <- ggplot(got, aes(x = year, y = number, colour = firstname))+
   geom_vline(aes (xintercept =as.numeric(as.Date("1981-01-01"))), linetype = "longdash")+
   geom_label(x=as.numeric(as.Date("1981-01-01")), y=550, label="Oscar, Renaud",colour = "black", show.legend=FALSE)+
   geom_vline(aes (xintercept =as.numeric(as.Date("2000-01-01"))), linetype = "longdash")+
-  geom_label(x=as.numeric(as.Date("2000-01-01")), y=800, label="Lolita, Alizé",colour = "black", show.legend=FALSE) +  theme_tufte()
+  geom_label(x=as.numeric(as.Date("2000-01-01")), y=800, label="Lolita, Alizé",colour = "black", show.legend=FALSE) 
 graph
 ```
 
-## French names and economy
+### French names and economy
 
 In this part we will observe if there is a correlation between French first names and the economy of the regions. For that we studied the names most given to the little boy and the little girl in 1990, 2000 and 2010 for each French region.
+
+#### In 1990
 
 ```{r fig.align="center"}
 data_dpt_clean$year <- str_pad(data_dpt_clean$year,5,"right")
@@ -378,15 +386,18 @@ eco1990 <- bind_rows(eco1990boy, eco1990girl)
 
 graph <- ggplot(eco1990boy, aes(x = firstname, y = X1990, color=Region))+ 
   geom_point(size=1.5) + ggtitle("Plot of more popular boy firstnames in 1990 by Region and GDP") +
-  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
+  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) 
 graph
 
 graph <- ggplot(eco1990girl, aes(x = firstname, y = X1990, color=Region))+ 
   geom_point(size=1.5) + ggtitle("Plot of more popular girl firstnames in 1990 by Region and GDP") +
-  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
+  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) 
 graph
 ```
+
 In 1990 we notice that the region Ile de France which is the richest to a popular name differs from other French regions. This is the case for the male and female first names.
+
+#### In 2000
 
 ```{r fig.align="center"}
 eco2000boy <- dep %>% filter(sex==1, year(year)==2000) %>% 
@@ -401,16 +412,19 @@ eco2000 <- bind_rows(eco2000boy, eco2000girl)
 
 graph <- ggplot(eco2000boy, aes(x = firstname, y = X2000, color=Region))+ 
   geom_point(size=1.5) + ggtitle("Plot of more popular boy firstnames in 2000 by Region and GDP") +
-  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
+  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) 
 graph
 
 graph <- ggplot(eco2000girl, aes(x = firstname, y = X2000, color=Region))+ 
   geom_point(size=1.5) + ggtitle("Plot of more popular girlss firstnames in 2000 by Region and GDP") +
-  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
+  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) 
 graph
 ```
 
+
 The same phenomenon is observed in 2000.
+
+#### In 2010
 
 ```{r fig.align="center"}
 eco2010boy <- dep %>% filter(sex==1, year(year)==2010) %>% 
@@ -425,12 +439,15 @@ eco2010 <- bind_rows(eco2010boy, eco2010girl)
 
 graph <- ggplot(eco2010boy, aes(x = firstname, y = X2010, color=Region))+ 
   geom_point(size=1.5) + ggtitle("Plot of more popular boy firstnames in 2010 by Region and GDP") +
-  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
+  xlab("Boy names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1))
 graph
 
 graph <- ggplot(eco2010girl, aes(x = firstname, y = X2010, color=Region))+ 
   geom_point(size=1.5) + ggtitle("Plot of more popular girl firstnames in 2010 by Region and GDP") +
-  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) +  theme_tufte()
+  xlab("Girl names") + ylab("GDP")+ theme(axis.text.x = element_text(angle = 60, hjust = 1)) 
 graph
 ```
+
 In 2010, the richest region still has different names from other regions. With these observations, it is difficult to say that the economy has an impact on French first names. If we see a difference of first names in the richest region, we do not observe any difference with the poorest region.
+
+# Final analysis
