@@ -14,17 +14,17 @@ output:
 
 # Overview and motivation
 
-The French names are very varied, from the classic frist name to the original first name. But what is the origin of French first names? In the following article we want to study variations of French first names and show that they often translate the major French events.
+The French names are very varied, from the most classic fristname to a very unique name. But what is the origin of French firstnames? In the following article we want to study variations of French firstnames and show that they often translate the major French events.
 
 In this report we will first study general statistics on french first names. Then we'll explain why some names are popular.
 
-You can find a summary of our project [here](https://www.youtube.com/watch?v=I3ItDhnvbdo&feature=youtu.be&fbclid=IwAR3lmYsDMx1JSrAf_Jc2aCBOz1v-h3na8IHqy8tVpEB6mtfYj7A6E_ta5qw).
+You can find a summary of our project [here](https://www.youtube.com/watch?v=I3ItDhnvbdo&feature=youtu.be&fbclid=IwAR3lmYsDMx1JSrAf_Jc2aCBOz1v-h3na8IHqy8tVpEB6mtfYj7A6E_ta5qw). (link to the screencast)
 
 # Related work
 
 Some articles are at the origin of the inspiration of this project. Notably the Website article of [Slate](http://www.slate.fr/life/74937/donnees-prenom-france-evolution) that explains why some firstnames gained or lost in popularity over time and the Website article from [Topito](http://www.topito.com/top-prenoms-autorises-civil-state) that gives weird firstnames (such as "Burger") that are allowed by civil status.
 
-These articles have given us avenues to explore. We decided to check and explain the appearance of these names through our database.
+These articles have given us avenues to explore. We decided to check and explain the appearance of these names through our databases.
 
 # Initial Data
 
@@ -38,7 +38,7 @@ And one dataset from Eco-health which gives the GDP by French regions per year f
 [Link Eco-health dataSet ](http://www.ecosante.fr/index2.php?base=DEPA&langs=FRA&langh=FRA&valeur=RICHPIBDFRAHAB&source=1%20&fbclid=IwAR13jACq5EBUSc9wP9xDKVLhftusxUY5YwhSTRnUXOSBL_dLuzQ7jP0XD9U)
 
 #  Data
-We then modified two datasets to adapt them to our work. These modifications were made on the two datasets of the INSEE. So we deleted all the colons of the rare names that counted these names but did not give the list of these first names. We also deleted the boxes that do not contain a specific year. The names of the labels have been translated into English. The year column has been translated into the "Date" format. Finally, a new "Region" column has been built. Indeed, the first names were grouped by French departments. We have grouped these departments by French regions.
+We then modified two datasets to adapt them to our work. These modifications were made on the two datasets of the INSEE. So we deleted all the colons of the rare names that counted these names but did not give the list of these first names. We also deleted the boxes that do not contain a specific year. The names of the labels have been translated into English. The year column has been translated into the "Date" format. Finally, a new "Region" column has been built. Indeed, the firstnames were grouped by French departments. We have grouped these departments by French regions.
 
 ```{r setup, echo=TRUE, warning=FALSE, results='hide', message=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -280,7 +280,7 @@ We even observe that the names Daenerys and Sensa appeared just after the diffus
 
 ### French names and films
 
-In the same spirit as the previous part, we will now observe the impact of films on French first names. For that we selected the films *Matrix* with the character of Neo, the movie *Star Wars: Episode I* with e character of Anakin, the movie *The lord of the rings* with Arwen and finally the movie *Twilight* with the name Bella. Besides, the name Bella, the other names appeared in France just after the diffusion of these films. The cinema therefore has an impact on French first names.
+In the same spirit as the previous part, we will now observe the impact of films on French firstnames. For that we selected the films *Matrix* with the character of Neo, the movie *Star Wars: Episode I* with e character of Anakin, the movie *The lord of the rings* with Arwen and finally the movie *Twilight* with the name Bella. Besides, the name Bella, the other names appeared in France just after the diffusion of these films. The cinema therefore has an impact on French firstnames.
 
 ```{r fig.align="center"}
 arwen <- data_nat_clean %>% filter(firstname == "ARWEN" & sex=="2")
@@ -302,7 +302,7 @@ graph
 
 ### French names and world wars
 
-One of the most tragic recent events in France is the two world wars. So we decided to see the impact of these wars on the first names of the French. One of the heroes of the war is Marchal Joffre, who won the Marne victory. We can see that this victory has an impact on the names of the French since the names Joffre and his feminine Joffrette have a peak of popularity just after this battle.
+One of the most tragic recent events in France is the two world wars. So we decided to see the impact of these wars on the firstnames of the French. One of the heroes of the war is Marchal Joffre, who won the Marne victory. We can see that this victory has an impact on the names of the French since the names Joffre and his feminine Joffrette have a peak of popularity just after this battle.
 
 When we look at the name Victoire, which means victory in French, there are two peaks in 1918 and 1945 which are the dates of the end of these two wars.
 
@@ -353,7 +353,7 @@ graph
 
 ### French names and economy
 
-In this part we will observe if there is a correlation between French first names and the economy of the regions. For that we studied the names most given to the little boy and the little girl in 1990, 2000 and 2010 for each French region. The dataset of eco-Health was used to study the GDP of each regions.
+In this part we will observe if there is a correlation between French firstnames and the economy of the regions. For that we studied the names most given to the little boy and the little girl in 1990, 2000 and 2010 for each French region. The dataset of eco-Health was used to study the GDP of each regions.
 
 #### In 1990
 
@@ -411,7 +411,7 @@ graph <- ggplot(eco1990girl, aes(x = firstname, y = X1990, color=Region))+
 graph
 ```
 
-In 1990 we notice that the region Ile de France which is the richest to a popular name differs from other French regions. This is the case for the male and female first names.
+In 1990 we notice that the region Ile de France which is the richest to a popular name differs from other French regions. This is the case for the male and female firstnames.
 
 #### In 2000
 
@@ -464,10 +464,10 @@ graph <- ggplot(eco2010girl, aes(x = firstname, y = X2010, color=Region))+
 graph
 ```
 
-In 2010, the richest region still has different names from other regions. With these observations, it is difficult to say that the economy has an impact on French first names. If we see a difference of first names in the richest region, we do not observe any difference with the poorest region.
+In 2010, the richest region still has different names from other regions. With these observations, it is difficult to say that the economy has an impact on French firstnames. If we see a difference of firstnames in the richest region, we do not observe any difference with the poorest region.
 
 # Final analysis
 
-In this report can understand that the first names French illustrates the history of France. We have seen that the geopolitical context, but also the cultural events have an impact on the popularity of French first names.
+In this report can understand that the firstnames French illustrates the history of France. We have seen that the geopolitical context, but also the cultural events have an impact on the popularity of French firstnames.
 
-Future work can be done on other countries to see the events that impact the popularity of first names.
+Future work can be done on other countries to see the events that impact the popularity of firstnames.
